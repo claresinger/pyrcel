@@ -1,6 +1,7 @@
 LICENSE.md
 MANIFEST.in
 README.md
+setup.py
 doc/Makefile
 doc/build_doc.sh
 doc/conf.py
@@ -16,7 +17,12 @@ doc/examples/activate.ipynb
 doc/examples/activate.rst
 doc/examples/basic_run.ipynb
 doc/examples/basic_run.rst
+doc/examples/.ipynb_checkpoints/README-checkpoint.md
+doc/examples/.ipynb_checkpoints/activate-checkpoint.ipynb
+doc/examples/.ipynb_checkpoints/basic_run-checkpoint.ipynb
+doc/examples/.ipynb_checkpoints/basic_run-checkpoint.rst
 doc/examples/activate_files/activate_13_0.png
+doc/examples/activate_files/.ipynb_checkpoints/activate_13_0-checkpoint.png
 doc/examples/basic_run_files/basic_run_13_0.png
 doc/examples/basic_run_files/basic_run_9_1.png
 doc/figs/model_example.png
