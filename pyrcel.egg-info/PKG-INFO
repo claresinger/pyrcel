@@ -1,0 +1,30 @@
+Metadata-Version: 1.2
+Name: pyrcel
+Version: 1.3.1
+Summary: pyrcel: 0D adiabatic cloud parcel model
+Home-page: https://github.com/darothen/pyrcel
+Author: Daniel Rothenberg
+Author-email: darothen@mit.edu
+Maintainer: Daniel Rothenberg
+Maintainer-email: darothen@mit.edu
+License: New BSD (3-clause)
+Download-URL: https://github.com/darothen/pyrcel
+Description: 
+                This code implements a relatively simple, adiabatic cloud parcel model for studying aerosol
+                activation. It allows the user to peform and iterate parcel model experiments in a simple
+                fashion through the use of an object-oriented implementation. Furthermore, interfaces for
+                several numerical solvers are built into the model so that users can choose whatever scheme
+                they would like to run with the model.
+            
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Fortran
+Classifier: Topic :: Scientific/Engineering :: Atmospheric Science
