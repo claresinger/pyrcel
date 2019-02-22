@@ -27,6 +27,8 @@ doc/examples/basic_run_files/basic_run_13_0.png
 doc/examples/basic_run_files/basic_run_9_1.png
 doc/figs/model_example.png
 doc/figs/sample_script.png
+doc/figs/.ipynb_checkpoints/model_example-checkpoint.png
+doc/figs/.ipynb_checkpoints/sample_script-checkpoint.png
 doc/templates/class.rst
 pyrcel/__init__.py
 pyrcel/activation.py
