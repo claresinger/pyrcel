@@ -124,14 +124,15 @@ def dist_ev(w,Na,Ni,aer_array):
     savename = "./figs/dist_ev_r_{:.1e}_w_{:.1e}_Na_{:.1e}.png".format(w/Na,w,Na)
     plt.savefig(savename,dpi=300)
 
-def dist_int(w,Na,Ni,aer_array):
+def dist_int(w,Na,Ni,aer_array,name):
     plt.figure(figsize=(10,6))
     fs = 12
 
     npop = len(aer_array)
-    col = list(np.random.choice(range(256), size=(npop,3))/256.)
+    #col = list(np.random.choice(range(256), size=(npop,3))/256.)
+    col = ['blue','limegreen','gold','red','azure','pink']
+
     for i in np.arange(npop):
-        Nt = Na[i]
         Ndis = Ni[i]
         arr = aer_array[i]
 
@@ -141,11 +142,11 @@ def dist_int(w,Na,Ni,aer_array):
         for t in tlist:
             r = arr[t,:]
             if t == tlist[-1]:
-                plt.semilogx(r*1e6, Ndis*1e-6, color=col[i], linestyle='solid', marker='.', label="$w/N_a = {:.1e}$".format(w/Nt))
+                plt.semilogx(r*1e6, Ndis*1e-6, color=col[i], linestyle='solid', marker='.', label=name[i])
             else:
                 plt.semilogx(r*1e6, Ndis*1e-6, color=col[i], linestyle='solid', marker='.')
     
-    plt.title("",fontsize=fs)
+    plt.title("Parcel with two aerosol populations -- $w/N_a = {:.1e}$".format(w/Na),fontsize=fs)
     plt.xlabel(r"Aerosol wet radius ($\mu$m)",fontsize=fs)
     plt.ylabel(r"Aerosol number conc. (cm$^{-3})$",fontsize=fs)
     plt.xticks(fontsize=fs)
