@@ -132,8 +132,9 @@ def dist_int(w,Na,Ni,aer_array,name):
     #col = list(np.random.choice(range(256), size=(npop,3))/256.)
     col = ['blue','limegreen','gold','red','azure','pink']
 
+    maxN = np.max(Ni)
     for i in np.arange(npop):
-        Ndis = Ni[i]
+        N = Ni[i]
         arr = aer_array[i]
 
         endt = np.shape(arr)[0]
@@ -142,9 +143,11 @@ def dist_int(w,Na,Ni,aer_array,name):
         for t in tlist:
             r = arr[t,:]
             if t == tlist[-1]:
-                plt.semilogx(r*1e6, Ndis*1e-6, color=col[i], linestyle='solid', marker='.', label=name[i])
+                plt.semilogx(r*1e6, N/maxN, '-', marker='o', color=col[i], label=name[i])
+            elif t == tlist[0]:
+                plt.semilogx(r*1e6, N/maxN, '-', color=col[i])
             else:
-                plt.semilogx(r*1e6, Ndis*1e-6, color=col[i], linestyle='solid', marker='.')
+                plt.semilogx(r*1e6, N/maxN, ':', color=col[i])
     
     plt.title("Parcel with two aerosol populations -- $w/N_a = {:.1e}$".format(w/Na),fontsize=fs)
     plt.xlabel(r"Aerosol wet radius ($\mu$m)",fontsize=fs)
@@ -153,4 +156,4 @@ def dist_int(w,Na,Ni,aer_array,name):
     plt.yticks(fontsize=fs)
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
-    plt.show()
+    plt.savefig("sulfate_seasalt.png",dpi=300)

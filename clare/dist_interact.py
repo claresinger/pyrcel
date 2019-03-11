@@ -14,16 +14,18 @@ T0 = 280.   # Initial Temperature, K
 S0 = -0.05  # Initial Supersaturation, 1-RH (95% here)
 
 # regime-determining variables
-w = 1.5 # updraft velocity (m/s)
-N = 3e3 # total particle number
+w = 6.0 # updraft velocity (m/s)
+N = w*2.0e3 # total particle number
 
 # initial lognormal distribution variables
+# shared variables
+sig = 1.5 # geometric standard deviation
+bins = 100 # number of bins to track (maybe choose this in relation to sigma)
+
 # aer1 = ammonium sulfate aerosol (Chen, 2018)
 name1 = 'sulfate'
 mu1 = 0.06 # mean (um)
-sig = 1.5 # geometric standard deviation
 kappa1 = 0.61 # hygroscopicity
-bins = 100
 sulf = pm.AerosolSpecies(name1, pm.Lognorm(mu=mu1, sigma=sig, N=N), kappa=kappa1, bins=bins)
 
 # aer2 = sea salt aerosol (Zieger, 2017)
