@@ -110,11 +110,11 @@ def dist_ev(w,Na,Ni,aer_array):
 
     for t in tlist:
         r = aer_array[t,:]
-        plt.semilogx(r, Ni*1e-6, linestyle='solid', marker='.', label="aerosol, t="+str(t))
+        plt.semilogx(r*1e6, Ni*1e-6, linestyle='solid', marker='.', label="aerosol, t="+str(t))
 
     title = "$w/N_a = {:.1e}$".format(w/Na)
     plt.title(title,fontsize=fs)
-    plt.xlabel(r"Aerosol dry radius ($\mu$m)",fontsize=fs)
+    plt.xlabel(r"Aerosol wet radius ($\mu$m)",fontsize=fs)
     plt.ylabel(r"Aerosl number conc. (cm$^{-3})$",fontsize=fs)
     plt.xticks(fontsize=fs)
     plt.yticks(fontsize=fs)
@@ -123,3 +123,33 @@ def dist_ev(w,Na,Ni,aer_array):
     
     savename = "./figs/dist_ev_r_{:.1e}_w_{:.1e}_Na_{:.1e}.png".format(w/Na,w,Na)
     plt.savefig(savename,dpi=300)
+
+def dist_int(w,Na,Ni,aer_array):
+    plt.figure(figsize=(10,6))
+    fs = 12
+
+    npop = len(aer_array)
+    col = list(np.random.choice(range(256), size=(npop,3))/256.)
+    for i in np.arange(npop):
+        Nt = Na[i]
+        Ndis = Ni[i]
+        arr = aer_array[i]
+
+        endt = np.shape(arr)[0]
+        tlist = np.geomspace(1,endt,9,endpoint=True).astype(int)-1
+
+        for t in tlist:
+            r = arr[t,:]
+            if t == tlist[-1]:
+                plt.semilogx(r*1e6, Ndis*1e-6, color=col[i], linestyle='solid', marker='.', label="$w/N_a = {:.1e}$".format(w/Nt))
+            else:
+                plt.semilogx(r*1e6, Ndis*1e-6, color=col[i], linestyle='solid', marker='.')
+    
+    plt.title("",fontsize=fs)
+    plt.xlabel(r"Aerosol wet radius ($\mu$m)",fontsize=fs)
+    plt.ylabel(r"Aerosol number conc. (cm$^{-3})$",fontsize=fs)
+    plt.xticks(fontsize=fs)
+    plt.yticks(fontsize=fs)
+    plt.legend(loc='upper left',fontsize=fs)
+    plt.tight_layout()
+    plt.show()
