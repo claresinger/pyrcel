@@ -23,7 +23,7 @@ def eps_ev(w,Na,Ni,aer_array):
     plt.yticks(fontsize=fs)
     plt.tight_layout()
     
-    savename = "./figs/eps_r_{:.1e}_w_{:.1e}_Na_{:.1e}.png".format(w/Na,w,Na)
+    savename = "./figs/regime/eps_r_{:.1e}_w_{:.1e}_Na_{:.1e}.png".format(w/Na,w,Na)
     plt.savefig(savename,dpi=300)
 
 def mult_eps_ev(ws,Nas,Nis,aer_arrays):
@@ -56,7 +56,7 @@ def mult_eps_ev(ws,Nas,Nis,aer_arrays):
     plt.tight_layout()
 
     # save plot
-    savename = "./figs/eps_ev_all.png"
+    savename = "./figs/regime/eps_ev_all.png"
     plt.savefig(savename,dpi=300)
 
 def mult_eps_static(ws,Nas,Nis,aer_arrays):
@@ -97,7 +97,7 @@ def mult_eps_static(ws,Nas,Nis,aer_arrays):
     plt.tight_layout()
 
     # save plot
-    savename = "./figs/eps_static_all.png"
+    savename = "./figs/regime/eps_static_all.png"
     plt.savefig(savename,dpi=300)
 
 
@@ -121,10 +121,10 @@ def dist_ev(w,Na,Ni,aer_array):
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
     
-    savename = "./figs/dist_ev_r_{:.1e}_w_{:.1e}_Na_{:.1e}.png".format(w/Na,w,Na)
+    savename = "./figs/regime/dist_ev_r_{:.1e}_w_{:.1e}_Na_{:.1e}.png".format(w/Na,w,Na)
     plt.savefig(savename,dpi=300)
 
-def dist_int(w,Na,Ni,aer_array,name):
+def dist_int(w,Na,Ni,aer_array,name,kappa):
     plt.figure(figsize=(10,6))
     fs = 12
     col = ['blue','limegreen','gold','red','azure','pink']
@@ -136,7 +136,6 @@ def dist_int(w,Na,Ni,aer_array,name):
     for t in tlist:
         x = clc.calc_int(aer_array[0],aer_array[1],t,Ni)
         [intr0,intr1] = x
-        #print(t,intr0,intr1)
 
         for i in np.arange(npop):
             N = Ni[i]
@@ -145,7 +144,7 @@ def dist_int(w,Na,Ni,aer_array,name):
             r = arr[t,:]
             
             if t == tlist[-1]:
-                plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label=name[i])
+                plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label="$\kappa = ${:.2f}".format(kappa[i]))
                 if i == 0:
                     plt.semilogx(r[intr0]*1e6, N[intr0]/maxN, 'ro')
                 if i == 1:
@@ -164,10 +163,10 @@ def dist_int(w,Na,Ni,aer_array,name):
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
     
-    savename = "sulfate_seasalt.png"
+    savename = "./figs/kappa/dist_growth_r_{:.1e}_k1_{:.1e}_k2_{:.1e}.png".format(w/Na,kappa[0],kappa[1])
     plt.savefig(savename, dpi=300)
 
-def dist_compete(w,Na,Ni,aer_array,name):
+def dist_compete(w,Na,Ni,aer_array,name,kappa):
     plt.figure(figsize=(10,6))
     fs = 12
     col = ['blue','limegreen','gold','red','azure','pink']
@@ -178,7 +177,7 @@ def dist_compete(w,Na,Ni,aer_array,name):
     for i in np.arange(npop):
         v = clc.calc_tot_vol(aer_array[i],Ni[i])
         grow = np.diff(v)/v[0:-1]
-        plt.loglog(np.arange(1,endt),grow*100.0,'-',color=col[i],label=name[i])
+        plt.loglog(np.arange(1,endt),grow*100.0,'-',color=col[i],label="$\kappa = ${:.2f}".format(kappa[i]))
 
     plt.title("Parcel with two aerosol populations -- $w/N_a = {:.1e}$".format(w/Na),fontsize=fs)
     plt.xlabel(r"Time (s)",fontsize=fs)
@@ -187,7 +186,6 @@ def dist_compete(w,Na,Ni,aer_array,name):
     plt.yticks((0.1,1,10),('0.1%','1%','10%'),fontsize=fs)
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
-    #plt.xlim((0,200))
     
-    savename = "growth_rates.png"
+    savename = "./figs/kappa/growth_rates_r_{:.1e}_k1_{:.1e}_k2_{:.1e}.png".format(w/Na,kappa[0],kappa[1])
     plt.savefig(savename, dpi=300)

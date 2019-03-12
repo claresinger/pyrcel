@@ -42,7 +42,7 @@ def calc_int(rx,ry,t,Ni):
     v1 = np.sum((4*np.pi/3)*1e18*(r1[t,intr1:-1])**3*(Ni[0][intr1:-1]))
     v2 = np.sum((4*np.pi/3)*1e18*(r2[t,0:intr2])**3*(Ni[1][0:intr2]))
 
-    print(t,n1,n2,v1,v2)
+    #print(t,n1,n2,v1,v2)
 
     if rx[t,0] < ry[t,0]:
         x = [intr1,intr2]
