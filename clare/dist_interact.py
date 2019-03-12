@@ -8,42 +8,78 @@ import calculations as clc
 import aerosol_plots as aerplt
 import matplotlib.pyplot as plt
 
-# environmental variables
-P0 = 1e5 # Initial Pressure, Pa
-T0 = 280.   # Initial Temperature, K
-S0 = -0.15  # Initial Supersaturation, 1-RH (85% here)
+def main():
+    # aerosol type (citation)
+    # prop = [name, mean radius (um), hygroscopicity=kappa]
 
-# regime-determining variables
-w = 6.0 # updraft velocity (m/s)
-N = w*2.0e3 # total particle number
+    # ammonium sulfate aerosol (Chen et al., 2018)
+    sulf = ['sulfate', 0.06, 0.61]
+    # sea salt aerosol (Zieger et al., 2017)
+    ss = ['sea salt', 0.2, 1.1]
+    # mineral dust (Koehler et al., 2009)
+    mindust = ['mineral dust',,0.045]
+    # black carbon (Wu et al., 2017), (Liu et al., 2013)
+    bcarb = ['black carbon', 0.213, 0.09]
+    
+    # biomass burning
+    bburn = ['biomass burning']
+    # nitrate
+    nit = ['nitrate']
+    # organic 
+    org = ['misc. organic',,0.15]
+    
+    # run experimet
+    runtest(sulf,ss)
 
-# initial lognormal distribution variables
-# shared variables
-sig = 1.5 # geometric standard deviation
-bins = 200 # number of bins to track (maybe choose this in relation to sigma)
+    # test
+    prop2 = ['not sea salt',0.2,0.1]
+    runtest(sulf,prop2)
 
-# aer1 = ammonium sulfate aerosol (Chen, 2018)
-name1 = 'sulfate'
-mu1 = 0.06 # mean (um)
-kappa1 = 0.61 # hygroscopicity
-sulf = pm.AerosolSpecies(name1, pm.Lognorm(mu=mu1, sigma=sig, N=N), kappa=kappa1, bins=bins)
+    mu0 = 0.1 # (um), typical range is 10 - 1000 (nm), so 0.01 - 1.0 (um)
+    kappa0 = 0.48 # typical range is 0.15 - 1.2
+    prop1 = ['name',mu0,kappa0]
+    n = 6
+    mus = np.logspace(-2,1,n)
+    kappas = np.linspace(0.15,1.5,n)
+    for i in np.arange(n):
+        prop2 = ['name',mus[i],kappas[i]]
+        runtest(prop1,prop2)
 
-# aer2 = sea salt aerosol (Zieger, 2017)
-name2 = 'sea salt'
-mu2 = 0.2 # mean (um)
-kappa2 = 1.1 # hygroscopicity, 1.1
-ss = pm.AerosolSpecies(name2, pm.Lognorm(mu=mu2, sigma=sig, N=N), kappa=kappa2, bins=bins)
+def runtest(prop1, prop2):
+    # environmental variables
+    P0 = 1e5 # Initial Pressure, Pa
+    T0 = 280.   # Initial Temperature, K
+    S0 = -0.15  # Initial Supersaturation, 1-RH (85% here)
 
-initial_aerosols = [sulf, ss]
+    # regime-determining variables
+    w = 6.0 # updraft velocity (m/s)
+    N = w*2.0e3 # total particle number
 
-dt = 1.0 # timestep (s)
-h_end = 5e2 # end altitude (m)
-t_end = h_end/w # end time (s)
+    # initial lognormal distribution variables
+    # shared variables
+    sig = 1.5 # geometric standard deviation
+    bins = 200 # number of bins to track (maybe choose this in relation to sigma)
 
-model = pm.ParcelModel(initial_aerosols, w, T0, S0, P0, console=False, accom=0.5)
-parcel_trace, aerosol_traces = model.run(t_end, dt, solver='cvode')
-sulf_arr = aerosol_traces[name1].values
-ss_arr = aerosol_traces[name2].values
+    [name1,mu1,kappa1] = prop1
+    aer1 = pm.AerosolSpecies(name1, pm.Lognorm(mu=mu1, sigma=sig, N=N), kappa=kappa1, bins=bins)
 
-aerplt.dist_int(w, N, [sulf.Nis,ss.Nis], [sulf_arr,ss_arr], [name1,name2], [kappa1,kappa2])
-aerplt.dist_compete(w, N, [sulf.Nis,ss.Nis], [sulf_arr,ss_arr], [name1,name2], [kappa1,kappa2])
+    [name2,mu2,kappa2] = prop2
+    aer2 = pm.AerosolSpecies(name2, pm.Lognorm(mu=mu2, sigma=sig, N=N), kappa=kappa2, bins=bins)
+
+    initial_aerosols = [aer1, aer2]
+
+    dt = 1.0 # timestep (s)
+    h_end = 5e3 # end altitude (m)
+    t_end = h_end/w # end time (s)
+
+    model = pm.ParcelModel(initial_aerosols, w, T0, S0, P0, console=False, accom=0.5)
+    parcel_trace, aerosol_traces = model.run(t_end, dt, solver='cvode')
+    aer1_arr = aerosol_traces[name1].values
+    aer2_arr = aerosol_traces[name2].values
+
+    aerplt.dist_int(w, N, [aer1.Nis,aer2.Nis], [aer1_arr,aer2_arr], [name1,name2], [kappa1,kappa2])
+    aerplt.dist_compete(w, N, [aer1.Nis,aer2.Nis], [aer1_arr,aer2_arr], [name1,name2], [kappa1,kappa2])
+
+
+if __name__ == "__main__":
+    main()

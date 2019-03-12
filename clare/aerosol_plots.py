@@ -144,7 +144,10 @@ def dist_int(w,Na,Ni,aer_array,name,kappa):
             r = arr[t,:]
             
             if t == tlist[-1]:
-                plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label="$\kappa = ${:.2f}".format(kappa[i]))
+                if name[i] != 'name':
+                    plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label=name[i]+", $\kappa = ${:.2f}".format(kappa[i]))
+                else:
+                    plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label="$\kappa = ${:.2f}".format(kappa[i]))
                 if i == 0:
                     plt.semilogx(r[intr0]*1e6, N[intr0]/maxN, 'ro')
                 if i == 1:
@@ -163,7 +166,7 @@ def dist_int(w,Na,Ni,aer_array,name,kappa):
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
     
-    savename = "./figs/kappa/dist_growth_r_{:.1e}_k1_{:.1e}_k2_{:.1e}.png".format(w/Na,kappa[0],kappa[1])
+    savename = "./figs/kappa/dist_growth_r_{:.1e}_k1_{:.2f}_k2_{:.2f}.png".format(w/Na,kappa[0],kappa[1])
     plt.savefig(savename, dpi=300)
 
 def dist_compete(w,Na,Ni,aer_array,name,kappa):
@@ -177,15 +180,18 @@ def dist_compete(w,Na,Ni,aer_array,name,kappa):
     for i in np.arange(npop):
         v = clc.calc_tot_vol(aer_array[i],Ni[i])
         grow = np.diff(v)/v[0:-1]
-        plt.loglog(np.arange(1,endt),grow*100.0,'-',color=col[i],label="$\kappa = ${:.2f}".format(kappa[i]))
+        if name[i] != 'name':
+            plt.loglog(np.arange(1,endt),grow,'-',color=col[i],label=name[i]+", $\kappa = ${:.2f}".format(kappa[i]))
+        else:
+            plt.loglog(np.arange(1,endt),grow,'-',color=col[i],label="$\kappa = ${:.2f}".format(kappa[i]))
 
     plt.title("Parcel with two aerosol populations -- $w/N_a = {:.1e}$".format(w/Na),fontsize=fs)
     plt.xlabel(r"Time (s)",fontsize=fs)
     plt.ylabel(r"Percentage change in population volume ($\Delta V/V$)",fontsize=fs)
     plt.xticks(fontsize=fs)
-    plt.yticks((0.1,1,10),('0.1%','1%','10%'),fontsize=fs)
+    #plt.yticks((0.001,0.01,0.1),('0.1%','1%','10%'),fontsize=fs)
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
     
-    savename = "./figs/kappa/growth_rates_r_{:.1e}_k1_{:.1e}_k2_{:.1e}.png".format(w/Na,kappa[0],kappa[1])
+    savename = "./figs/kappa/growth_rates_r_{:.1e}_k1_{:.2f}_k2_{:.2f}.png".format(w/Na,kappa[0],kappa[1])
     plt.savefig(savename, dpi=300)
