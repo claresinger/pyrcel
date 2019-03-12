@@ -127,33 +127,67 @@ def dist_ev(w,Na,Ni,aer_array):
 def dist_int(w,Na,Ni,aer_array,name):
     plt.figure(figsize=(10,6))
     fs = 12
-
-    npop = len(aer_array)
-    #col = list(np.random.choice(range(256), size=(npop,3))/256.)
     col = ['blue','limegreen','gold','red','azure','pink']
+    
+    npop = len(aer_array)
+    endt = np.shape(aer_array[0])[0]
+    tlist = np.geomspace(1,endt,9,endpoint=True).astype(int)-1
 
-    maxN = np.max(Ni)
-    for i in np.arange(npop):
-        N = Ni[i]
-        arr = aer_array[i]
+    for t in tlist:
+        x = clc.calc_int(aer_array[0],aer_array[1],t,Ni)
+        [intr0,intr1] = x
+        #print(t,intr0,intr1)
 
-        endt = np.shape(arr)[0]
-        tlist = np.geomspace(1,endt,9,endpoint=True).astype(int)-1
-
-        for t in tlist:
+        for i in np.arange(npop):
+            N = Ni[i]
+            maxN = np.max(N)
+            arr = aer_array[i]
             r = arr[t,:]
+            
             if t == tlist[-1]:
-                plt.semilogx(r*1e6, N/maxN, '-', marker='o', color=col[i], label=name[i])
+                plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label=name[i])
+                if i == 0:
+                    plt.semilogx(r[intr0]*1e6, N[intr0]/maxN, 'ro')
+                if i == 1:
+                    plt.semilogx(r[intr1]*1e6, N[intr1]/maxN, 'ro')
             elif t == tlist[0]:
-                plt.semilogx(r*1e6, N/maxN, '-', color=col[i])
+                plt.semilogx(r*1e6, N/maxN, '-', color=col[i], lw=1)
             else:
-                plt.semilogx(r*1e6, N/maxN, ':', color=col[i])
+                al = 0.2+t/tlist[-1]
+                plt.semilogx(r*1e6, N/maxN, '-', color=col[i], alpha=al, lw=0.5)
     
     plt.title("Parcel with two aerosol populations -- $w/N_a = {:.1e}$".format(w/Na),fontsize=fs)
     plt.xlabel(r"Aerosol wet radius ($\mu$m)",fontsize=fs)
-    plt.ylabel(r"Aerosol number conc. (cm$^{-3})$",fontsize=fs)
+    plt.ylabel(r"Aerosol number (normalized)",fontsize=fs)
     plt.xticks(fontsize=fs)
     plt.yticks(fontsize=fs)
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
-    plt.savefig("sulfate_seasalt.png",dpi=300)
+    
+    savename = "sulfate_seasalt.png"
+    plt.savefig(savename, dpi=300)
+
+def dist_compete(w,Na,Ni,aer_array,name):
+    plt.figure(figsize=(10,6))
+    fs = 12
+    col = ['blue','limegreen','gold','red','azure','pink']
+    
+    npop = len(aer_array)
+    endt = np.shape(aer_array[0])[0]
+
+    for i in np.arange(npop):
+        v = clc.calc_tot_vol(aer_array[i],Ni[i])
+        grow = np.diff(v)/v[0:-1]
+        plt.loglog(np.arange(1,endt),grow*100.0,'-',color=col[i],label=name[i])
+
+    plt.title("Parcel with two aerosol populations -- $w/N_a = {:.1e}$".format(w/Na),fontsize=fs)
+    plt.xlabel(r"Time (s)",fontsize=fs)
+    plt.ylabel(r"Percentage change in population volume ($\Delta V/V$)",fontsize=fs)
+    plt.xticks(fontsize=fs)
+    plt.yticks((0.1,1,10),('0.1%','1%','10%'),fontsize=fs)
+    plt.legend(loc='upper left',fontsize=fs)
+    plt.tight_layout()
+    #plt.xlim((0,200))
+    
+    savename = "growth_rates.png"
+    plt.savefig(savename, dpi=300)
