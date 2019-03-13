@@ -144,7 +144,7 @@ def dist_int(w,Na,Ni,aer_array,name,kappa,mu):
             r = arr[t,:]
             
             if t == tlist[-1]:
-                if name[i] != 'name':
+                if name[i] != "name{:1d}".format(i+1):
                     plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label=name[i]+", $\kappa = ${:.3f}".format(kappa[i]))
                 else:
                     plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label="$\kappa = ${:.3f}".format(kappa[i]))
@@ -167,8 +167,7 @@ def dist_int(w,Na,Ni,aer_array,name,kappa,mu):
     plt.tight_layout()
     
     savename = "./figs/kappa/dist_growth_m1_{:.3f}_k1_{:.3f}_m2_{:.3f}_k2_{:.3f}.png".format(mu[0],kappa[0],mu[1],kappa[1])
-    if ((name[0] != "name") and (name[1] != "name")):
-        print("save")
+    if ((name[0] != "name1") and (name[1] != "name2")):
         savename = "./figs/aerosoltypes/dist_growth_{:s}_k1_{:.3f}_{:s}_k2_{:.3f}.png".format(name[0],kappa[0],name[1],kappa[1])
     plt.savefig(savename, dpi=300)
 
@@ -183,7 +182,7 @@ def dist_compete(w,Na,Ni,aer_array,name,kappa,mu):
     for i in np.arange(npop):
         v = clc.calc_tot_vol(aer_array[i],Ni[i])
         grow = np.diff(v)/v[0:-1]
-        if name[i] != 'name':
+        if name[i] != "name{:1d}".format(i+1):
             plt.loglog(np.arange(1,endt),grow,'-',color=col[i],label=name[i]+", $\kappa = ${:.3f}".format(kappa[i]))
         else:
             plt.loglog(np.arange(1,endt),grow,'-',color=col[i],label="$\kappa = ${:.3f}".format(kappa[i]))
@@ -197,7 +196,6 @@ def dist_compete(w,Na,Ni,aer_array,name,kappa,mu):
     plt.tight_layout()
     
     savename = "./figs/kappa/growth_rates_m1_{:.3f}_k1_{:.3f}_m2_{:.3f}_k2_{:.3f}.png".format(mu[0],kappa[0],mu[1],kappa[1])
-    if ((name[0] != "name") and (name[1] != "name")):
-        print("save")
+    if ((name[0] != "name1") and (name[1] != "name2")):
         savename = "./figs/aerosoltypes/growth_rates_{:s}_k1_{:.3f}_{:s}_k2_{:.3f}.png".format(name[0],kappa[0],name[1],kappa[1])
     plt.savefig(savename, dpi=300)

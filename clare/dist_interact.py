@@ -12,6 +12,24 @@ def main():
     # aerosol type (citation)
     # prop = [name, mean radius (um), hygroscopicity=kappa]
 
+    #run_real_aerosol_pops()
+
+    mu1 = 0.1 # (um), typical range is 10 - 1000 (nm), so 0.01 - 1.0 (um)
+    kappa1 = 0.48 # typical range is 0.15 - 1.2
+    prop1 = ['name1',mu1,kappa1]
+    n = 6
+    mus = np.logspace(-2,1,n)
+    kappas = 1.5*np.logspace(-2,0,n)
+    for i in np.arange(n):
+        mu2 = mus[i]
+        kappa2 = kappas[i]
+        prop2 = ['name2',mu2,kappa2]
+        runtest(prop1,prop2)
+
+def run_real_aerosol_pops():
+    # aerosol type (citation)
+    # prop = [name, mean radius (um), hygroscopicity=kappa]
+
     # ammonium sulfate aerosol (Chen et al., 2018)
     sulf = ['sulfate', 0.06, 0.61]
     # sea salt aerosol (Zieger et al., 2017)
@@ -37,18 +55,8 @@ def main():
     runtest(sulf,freshburn)
 
     # # test
-    # prop2 = ['not sea salt',0.2,0.1]
+    # prop2 = ['other,0.2,0.1]
     # runtest(sulf,prop2)
-
-    mu0 = 0.1 # (um), typical range is 10 - 1000 (nm), so 0.01 - 1.0 (um)
-    kappa0 = 0.48 # typical range is 0.15 - 1.2
-    prop1 = ['name',mu0,kappa0]
-    n = 6
-    mus = np.logspace(-2,1,n)
-    kappas = 1.5*np.logspace(-2,0,n)
-    for i in np.arange(n):
-        prop2 = ['name',mus[i],kappas[i]]
-        runtest(prop1,prop2)
 
 def runtest(prop1, prop2):
     # environmental variables
@@ -74,7 +82,7 @@ def runtest(prop1, prop2):
     initial_aerosols = [aer1, aer2]
 
     dt = 1.0 # timestep (s)
-    h_end = 5e3 # end altitude (m)
+    h_end = 5e2 # end altitude (m)
     t_end = h_end/w # end time (s)
 
     model = pm.ParcelModel(initial_aerosols, w, T0, S0, P0, console=False, accom=0.5)
