@@ -124,7 +124,7 @@ def dist_ev(w,Na,Ni,aer_array):
     savename = "./figs/regime/dist_ev_r_{:.1e}_w_{:.1e}_Na_{:.1e}.png".format(w/Na,w,Na)
     plt.savefig(savename,dpi=300)
 
-def dist_int(w,Na,Ni,aer_array,name,kappa):
+def dist_int(w,Na,Ni,aer_array,name,kappa,mu):
     plt.figure(figsize=(10,6))
     fs = 12
     col = ['blue','limegreen','gold','red','azure','pink']
@@ -145,9 +145,9 @@ def dist_int(w,Na,Ni,aer_array,name,kappa):
             
             if t == tlist[-1]:
                 if name[i] != 'name':
-                    plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label=name[i]+", $\kappa = ${:.2f}".format(kappa[i]))
+                    plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label=name[i]+", $\kappa = ${:.3f}".format(kappa[i]))
                 else:
-                    plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label="$\kappa = ${:.2f}".format(kappa[i]))
+                    plt.semilogx(r*1e6, N/maxN, '-', lw=2, color=col[i], label="$\kappa = ${:.3f}".format(kappa[i]))
                 if i == 0:
                     plt.semilogx(r[intr0]*1e6, N[intr0]/maxN, 'ro')
                 if i == 1:
@@ -166,10 +166,13 @@ def dist_int(w,Na,Ni,aer_array,name,kappa):
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
     
-    savename = "./figs/kappa/dist_growth_r_{:.1e}_k1_{:.2f}_k2_{:.2f}.png".format(w/Na,kappa[0],kappa[1])
+    savename = "./figs/kappa/dist_growth_m1_{:.3f}_k1_{:.3f}_m2_{:.3f}_k2_{:.3f}.png".format(mu[0],kappa[0],mu[1],kappa[1])
+    if ((name[0] != "name") and (name[1] != "name")):
+        print("save")
+        savename = "./figs/aerosoltypes/dist_growth_{:s}_k1_{:.3f}_{:s}_k2_{:.3f}.png".format(name[0],kappa[0],name[1],kappa[1])
     plt.savefig(savename, dpi=300)
 
-def dist_compete(w,Na,Ni,aer_array,name,kappa):
+def dist_compete(w,Na,Ni,aer_array,name,kappa,mu):
     plt.figure(figsize=(10,6))
     fs = 12
     col = ['blue','limegreen','gold','red','azure','pink']
@@ -181,9 +184,9 @@ def dist_compete(w,Na,Ni,aer_array,name,kappa):
         v = clc.calc_tot_vol(aer_array[i],Ni[i])
         grow = np.diff(v)/v[0:-1]
         if name[i] != 'name':
-            plt.loglog(np.arange(1,endt),grow,'-',color=col[i],label=name[i]+", $\kappa = ${:.2f}".format(kappa[i]))
+            plt.loglog(np.arange(1,endt),grow,'-',color=col[i],label=name[i]+", $\kappa = ${:.3f}".format(kappa[i]))
         else:
-            plt.loglog(np.arange(1,endt),grow,'-',color=col[i],label="$\kappa = ${:.2f}".format(kappa[i]))
+            plt.loglog(np.arange(1,endt),grow,'-',color=col[i],label="$\kappa = ${:.3f}".format(kappa[i]))
 
     plt.title("Parcel with two aerosol populations -- $w/N_a = {:.1e}$".format(w/Na),fontsize=fs)
     plt.xlabel(r"Time (s)",fontsize=fs)
@@ -193,5 +196,8 @@ def dist_compete(w,Na,Ni,aer_array,name,kappa):
     plt.legend(loc='upper left',fontsize=fs)
     plt.tight_layout()
     
-    savename = "./figs/kappa/growth_rates_r_{:.1e}_k1_{:.2f}_k2_{:.2f}.png".format(w/Na,kappa[0],kappa[1])
+    savename = "./figs/kappa/growth_rates_m1_{:.3f}_k1_{:.3f}_m2_{:.3f}_k2_{:.3f}.png".format(mu[0],kappa[0],mu[1],kappa[1])
+    if ((name[0] != "name") and (name[1] != "name")):
+        print("save")
+        savename = "./figs/aerosoltypes/growth_rates_{:s}_k1_{:.3f}_{:s}_k2_{:.3f}.png".format(name[0],kappa[0],name[1],kappa[1])
     plt.savefig(savename, dpi=300)

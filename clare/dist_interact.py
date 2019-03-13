@@ -15,32 +15,37 @@ def main():
     # ammonium sulfate aerosol (Chen et al., 2018)
     sulf = ['sulfate', 0.06, 0.61]
     # sea salt aerosol (Zieger et al., 2017)
-    ss = ['sea salt', 0.2, 1.1]
-    # mineral dust (Koehler et al., 2009)
-    mindust = ['mineral dust',,0.045]
+    seasalt = ['sea salt', 0.2, 1.1]
+    # mineral dust (Johnson & Osborne, 2011), (Koehler et al., 2009)
+    mindust = ['mineral dust',1.3,0.045]
     # black carbon (Wu et al., 2017), (Liu et al., 2013)
-    bcarb = ['black carbon', 0.213, 0.09]
+    blkcarb = ['black carbon', 0.213, 0.09]
+    # fresh biomass burning (Yi, 2018)
+    freshburn = ['fresh biomass burning',0.074,0.21]
     
-    # biomass burning
-    bburn = ['biomass burning']
-    # nitrate
-    nit = ['nitrate']
-    # organic 
-    org = ['misc. organic',,0.15]
+    # # aged biomass burning (Yi, 2018)
+    # ageburn = ['aged biomass burning',,0.29]
+    # # nitrate
+    # nit = ['nitrate']
+    # # organic 
+    # org = ['misc. organic',,0.15]
     
-    # run experimet
-    runtest(sulf,ss)
+    # run experiment on known aerosol varieties
+    runtest(sulf,seasalt)
+    runtest(sulf,mindust)
+    runtest(sulf,blkcarb)
+    runtest(sulf,freshburn)
 
-    # test
-    prop2 = ['not sea salt',0.2,0.1]
-    runtest(sulf,prop2)
+    # # test
+    # prop2 = ['not sea salt',0.2,0.1]
+    # runtest(sulf,prop2)
 
     mu0 = 0.1 # (um), typical range is 10 - 1000 (nm), so 0.01 - 1.0 (um)
     kappa0 = 0.48 # typical range is 0.15 - 1.2
     prop1 = ['name',mu0,kappa0]
     n = 6
     mus = np.logspace(-2,1,n)
-    kappas = np.linspace(0.15,1.5,n)
+    kappas = 1.5*np.logspace(-2,0,n)
     for i in np.arange(n):
         prop2 = ['name',mus[i],kappas[i]]
         runtest(prop1,prop2)
@@ -77,8 +82,8 @@ def runtest(prop1, prop2):
     aer1_arr = aerosol_traces[name1].values
     aer2_arr = aerosol_traces[name2].values
 
-    aerplt.dist_int(w, N, [aer1.Nis,aer2.Nis], [aer1_arr,aer2_arr], [name1,name2], [kappa1,kappa2])
-    aerplt.dist_compete(w, N, [aer1.Nis,aer2.Nis], [aer1_arr,aer2_arr], [name1,name2], [kappa1,kappa2])
+    aerplt.dist_int(w, N, [aer1.Nis,aer2.Nis], [aer1_arr,aer2_arr], [name1,name2], [kappa1,kappa2], [mu1,mu2])
+    aerplt.dist_compete(w, N, [aer1.Nis,aer2.Nis], [aer1_arr,aer2_arr], [name1,name2], [kappa1,kappa2], [mu1,mu2])
 
 
 if __name__ == "__main__":
