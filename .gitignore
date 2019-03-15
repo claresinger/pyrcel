@@ -19,7 +19,6 @@ dist/
 *.pdf
 *.csv
 *.html
-clare/figs/*.png
 
 # Documentation
 ############################
