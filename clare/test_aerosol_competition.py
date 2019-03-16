@@ -14,27 +14,52 @@ def main():
     h = 1e3
     
     # create aerosol list to test on 
-    aerosol_list = get_real_aerosols()
+    #aerosol_list = get_real_aerosols()
+    aerosol_list = generate_aerosols()
     print(aerosol_list)
     
     # create list of all aerosol tests
     init_aerosols_list = list()
     parcel_trace_list = list()
     aerosol_trace_list = list()
+
+    # run parcel for individual aerosols
     for aerosol in aerosol_list:
         initial_aerosols, parcel_trace, aerosol_trace = runparcel([aerosol], h)
         init_aerosols_list.append(initial_aerosols)
         parcel_trace_list.append(parcel_trace)
         aerosol_trace_list.append(aerosol_trace)
+
+#     # run parcel for pairs of aerosols
+#     midi = int(len(aerosol_list)/2)
+#     print(midi)
+#     mid = aerosol_list[int(len(aerosol_list)/2)]
+#     print(mid)
+#     for i,aerosol in enumerate(aerosol_list):
+#         if i != midi:
+#             initial_aerosols, parcel_trace, aerosol_trace = runparcel([mid, aerosol], h)
+#             init_aerosols_list.append(initial_aerosols)
+#             parcel_trace_list.append(parcel_trace)
+#             aerosol_trace_list.append(aerosol_trace)
+            
+    # run experiment on known aerosol varieties
+    # test all combinations
+    for i in np.arange(len(aerosol_list)):
+        for j in np.arange(len(aerosol_list)):
+            if j > i:
+                initial_aerosols, parcel_trace, aerosol_trace = runparcel([aerosol_list[i], aerosol_list[j]], h)
+                init_aerosols_list.append(initial_aerosols)
+                parcel_trace_list.append(parcel_trace)
+                aerosol_trace_list.append(aerosol_trace)
     
-    i,j = 3,0
-    ptrace = parcel_trace_list[i]
-    atraces = aerosol_trace_list[i]
-    keys = list(atraces.keys())
-    key = keys[j]
-    atrace = aerosol_trace_list[i][key]
-    initaer = init_aerosols_list[i][j]
-    panim.make_anim(ptrace,atrace,initaer,key)
+    # i,j = 3,0
+    # ptrace = parcel_trace_list[i]
+    # atraces = aerosol_trace_list[i]
+    # keys = list(atraces.keys())
+    # key = keys[j]
+    # atrace = aerosol_trace_list[i][key]
+    # initaer = init_aerosols_list[i][j]
+    # panim.make_anim(ptrace,atrace,initaer,key)
     
 def runparcel(aerosols, h):
     npop = len(aerosols)
@@ -52,8 +77,7 @@ def runparcel(aerosols, h):
     # initial lognormal distribution variables
     # shared variables
     sig = 1.5  # geometric standard deviation
-    # number of bins to track (maybe choose this in relation to sigma)
-    bins = 200
+    bins = 200 # number of bins to track (maybe choose this in relation to sigma)
 
     initial_aerosols = list()
     for i in np.arange(npop):
@@ -100,7 +124,32 @@ def get_real_aerosols():
     aerosol_list = list([sulf, seasalt, mindust, blkcarb,
                         urban, freshburn, ageburn])
 
-    aerosol_list = list([sulf, seasalt, freshburn, ageburn])
+    #aerosol_list = list([sulf, seasalt, freshburn, ageburn])
+
+    return(aerosol_list)
+
+def generate_aerosols():
+    # aerosol type (citation)
+    # prop = [name, mean radius (um), hygroscopicity=kappa]
+
+    mu = 0.1
+    aerosol_list = list()
+    for kappa in np.linspace(0,1.5,9):
+        aer = ['', mu, kappa]
+        aerosol_list.append(aer)
+
+    # ammonium sulfate aerosol (Chen et al., 2018)
+    sulf = ['sulfate', mu, 0.61]
+    # sea salt aerosol (Zieger et al., 2017)
+    seasalt = ['sea-salt', mu, 1.1]
+    # mineral dust (Johnson & Osborne, 2011), (Koehler et al., 2009)
+    mindust = ['mineral-dust', mu, 0.045]
+    # black carbon (Wu et al., 2017), (Liu et al., 2013)
+    blkcarb = ['black-carbon', mu, 0.09]
+    # fresh biomass burning (Yi, 2018)
+    bburn = ['biomass-burning', mu, 0.21]
+
+    aerosol_list = list([sulf, seasalt, mindust, blkcarb, bburn])
 
     return(aerosol_list)
 

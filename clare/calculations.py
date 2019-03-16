@@ -51,5 +51,9 @@ def calc_int(rx,ry,t,Ni):
     return(x)
 
 def calc_tot_vol(r,N):
-    v = np.sum((4*np.pi/3)*1e18*r**3*N,axis=1)
+    vols = (4*np.pi/3)*1e18*r**3*N
+    if r.size > N.size:
+        v = np.sum(vols,axis=1)
+    else:
+        v = np.sum(vols)
     return(v)
