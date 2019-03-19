@@ -11,12 +11,21 @@ import matplotlib.animation as animation
 
 def main():
     h = 1e3
-    initial_aerosols, parcel_trace, aerosol_traces = run_two_component_parcel(h)
+
+    w = 6.0 # updraft velocity (m/s)
+    #N = w*2.0e1 # total particle number, aerosol-limited
+    #savestr = "aerosol-limited"
+    #N = w*2.0e3 # total particle number, transition
+    #savestr = "transition"
+    N = w*2.0e5 # total particle number, updraft-limited
+    savestr = "updraft-limited"
+    ratio = w/N
+    initial_aerosols, parcel_trace, aerosol_traces = run_two_component_parcel(h, N)
     
     keys = list(aerosol_traces.keys())
-    make_anim(parcel_trace, aerosol_traces, initial_aerosols, keys)
+    make_anim(parcel_trace, aerosol_traces, initial_aerosols, keys, ratio, savestr)
 
-def make_anim(parcel_trace, aerosol_traces, initial_aerosols, keys):
+def make_anim(parcel_trace, aerosol_traces, initial_aerosols, keys, ratio, savestr):
     T = parcel_trace["T"].values
     z = parcel_trace["z"].values
     N1 = initial_aerosols[0].Nis
@@ -33,6 +42,7 @@ def make_anim(parcel_trace, aerosol_traces, initial_aerosols, keys):
     gs = gridspec.GridSpec(1, 2, width_ratios=[1,4]) 
     ax1 = fig.add_subplot(gs[0])
     ax2 = fig.add_subplot(gs[1])
+    fig.suptitle('$W/N_a = {:.1e}$'.format(ratio), y=0.95, fontsize=14)
     
     # initialize parcel profile plot
     Tprof, = ax1.plot(T[0:1],z[0:1],'ro-')
@@ -59,7 +69,7 @@ def make_anim(parcel_trace, aerosol_traces, initial_aerosols, keys):
 
     anim = animation.FuncAnimation(fig, _update_plot, fargs = (fig, Tprof, T, z, dist1, dist2, r1, N1, maxN1, r2, N2, maxN2), frames=frames)
     hstr = "{:.1f}".format(np.max(z)/1e3)
-    anim.save("anims/default_two_component_parcel_"+hstr+".mp4", writer=writer, dpi=300)
+    anim.save("anims/"+savestr+"_two_component_parcel_"+hstr+".mp4", writer=writer, dpi=300)
 
 def _update_plot(i, fig, Tprof, T, z, dist1, dist2, r1, N1, maxN1, r2, N2, maxN2):
     # update parcel plot
@@ -73,7 +83,7 @@ def _update_plot(i, fig, Tprof, T, z, dist1, dist2, r1, N1, maxN1, r2, N2, maxN2
     # return
     return Tprof, dist1, dist2
 
-def run_two_component_parcel(h):
+def run_two_component_parcel(h, N):
     # environmental variables
     P0 = 1e5 # Initial Pressure, Pa
     T0 = 280.   # Initial Temperature, K
@@ -81,7 +91,6 @@ def run_two_component_parcel(h):
 
     # regime-determining variables
     w = 6.0 # updraft velocity (m/s)
-    N = w*2.0e3 # total particle number
 
     # initial lognormal distribution variables
     # shared variables
